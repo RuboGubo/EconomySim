@@ -1,123 +1,118 @@
+from dataclasses import dataclass
 import time
+from typing import List
 
-# Creditors = [[bank name, total money, [[ContractInterest ID, ContractInterest owner ID, interest, total money in ContractInterest (true)]]]]
-Creditors = [['Bank Alpha', 0, [['Bank Alpha ContractInterest 1', 'debtor 1', 1.05, 5], 
-                            ['Bank Alpha ContractInterest 2', 'debtor 2', 1.03, 20]]]]
+@dataclass
+class Entity:
+    TotalValue: float
+    debtor: str
+    creditor: str
+    ID: str
 
-# Debtors = [[name, total money, [[ContractInterest ID, ContractInterest owner ID, interest, total money in ContractInterest (aware)]]]]
-Debtors = [['debtor 1', 0, [['Bank Alpha ContractInterest 1', 'debtor 1', 1.5, 0]]],
-           ['debtor 2', 0, [['Bank Alpha ContractInterest 2', 'debtor 2', 1.3, 0]]]]
+@dataclass
+class ContractInterest:
+    TotalValue: float
+    debtor: str
+    creditor: str
+    interest: float
 
-# Debtors = [[name, total money, debtor component, Creditor component]]
-Entity = [['bob', 0, 'debtor 1', 'Bank Alpha ContractInterest 1'],
-          ['sharon', 0, 'debtor 2', 'a']]
+@dataclass
+class Debtor:
+    TotalValue: float
+    ID: str
 
-def printContractInterests():
-        for p in range(0, len(Debtors)): #cycle through Debtors
-            print(Debtors[p][0])
-            for cp in range(0, len(Debtors[p][2])): #cycle through ContractInterests debtor
-                print(Debtors[p][2][cp])
-            print()
-        
-        print()
-        
-        for b in range(0, len(Creditors)): # cycle through Creditors
-            print(Creditors[b][0])
-            for c in range(0, len(Creditors[b][2])): # cycle through ContractInterests
-                print(Creditors[b][2][c])
+@dataclass
+class Creditor:
+    TotalValue: float
+    ID: str
 
-def ContractInterestsyncer(i):
-    print('ContractInterest Syncer:')
-    # i = item ID
-    for p in range(0, len(Debtors)): # cycle through Debtors
-        for cp in range(0, len(Debtors[p][2])): # cycle through ContractInterests debtor
-            print(Debtors[p][2][cp])
+@dataclass
+class ContractAssets:
+    totalValue: float
+    debtor: str
+    creditor: str
+    interest: float
 
-            for b in range(0, len(Creditors)): # cycle through Creditors
-                for c in range(0, len(Creditors[b][2])): # cycle through ContractInterests
-                    print(Creditors[b][2][c])
 
-                    if Creditors[b][2][c][i] == Debtors[p][2][cp][i]:
-                        print()
-                        print('Match found: For Item code', i)
-                        print('Bank:   ', Creditors[b][2][c])
-                        print('debtor: ', Debtors[p][2][cp])
-                        print()
+# add assets
 
-                        print('Synced:')
-                        for sy in range(2, len(Creditors[b][2][c])): #find all things to sync
+debtor1 = Debtor(0, 'debtor1')
+Creditor1 = Creditor(0, 'Creditor1')
+bob = Entity(debtor1.TotalValue + Creditor1.TotalValue , debtor1, Creditor1, 'bob')
 
-                            #banck gets to deside conditions so they are the validator
-                            Debtors[p][2][cp][sy] = Creditors[b][2][c][sy]
-                            print(Debtors[p][2][cp])
+debtor2 = Debtor(0, 'debtor2')
+Creditor2 = Creditor(0, 'Creditor2')
+sharon = Entity(debtor2.TotalValue + Creditor2.TotalValue, debtor2, Creditor2, 'sharon')
 
-                        print()
 
-def TotalMoney():
-    print('Total Money:')
-    for p in range(0, len(Debtors)): # cycle through Debtors
-        Debtors[p][1] = 0
-        for cp in range(0, len(Debtors[p][2])): # cycle through ContractInterests debtor
-            Debtors[p][1] += Debtors[p][2][cp][3]
-            print(Debtors[p])
+BankAlphaContractInterest1 = ContractInterest(1, 'debtor1', 'Creditor2', 1.05)
+
+AllEntity = [bob, sharon]
+AllDebtors = [debtor1, debtor2]
+AllCreditors = [Creditor1, Creditor2]
+AllContractInterests = [BankAlphaContractInterest1]
+
+def CalculateComponentValue(): # might need improving
+    for i in range(0, len(AllContractInterests)): # find ContractInterests with debitors
+        for d in range(0, len(AllDebtors)):
+            if AllContractInterests[i].debtor == AllDebtors[d].ID:
+                AllDebtors[d].TotalValue += AllContractInterests[i].TotalValue
+
+    for i in range(0, len(AllContractInterests)): # find ContractInterests with debitors
+        for d in range(0, len(AllDebtors)):
+            if AllContractInterests[i].creditor == AllCreditors[d].ID:
+                AllCreditors[d].TotalValue -= AllContractInterests[i].TotalValue
     
-    for p in range(0, len(Creditors)): # cycle through Creditors
-        Creditors[p][1] = 0
-        for cp in range(0, len(Creditors[p][2])): # cycle through ContractInterests Creditors
-            Creditors[p][1] -= Creditors[p][2][cp][3]
-            print(Creditors[p])
-
-def InterestCalculation():
-    print('Interest Calculation:')
-    for b in range(0, len(Creditors)): # cycle through Creditors
-            print(Creditors[b][0])
-            for c in range(0, len(Creditors[b][2])): # cycle through ContractInterests
-
-                Creditors[b][2][c][3] = Creditors[b][2][c][3]*Creditors[b][2][c][2]
-
-                print(Creditors[b][2][c])
-        
-def EntitySumer():
-    print('Entity Sum:')
-
-    for b in range(0, len(Entity)): # cycle through all Entitys
-        for i in range(0, len(Debtors)): # find Debtors
-            if Entity[b][2] == Debtors[i][0]:
-                print(b)
-                print(Entity[b][1], '           ', Debtors[i][1])
-                Entity[b][1] += Debtors[i][1]
-
-        for i in range(0, len(Creditors)): # find Debtors
-            if Entity[b][3] == Creditors[i][0]:
-                Entity[b][1] += Creditors[i][1]
+    return AllDebtors, AllCreditors
 
 
-    #Entity[b][1] = Debtors
-    print(Entity[b])
 
+def CalculateEntityValue():
+    for i in range(0, len(AllEntity)):
+        AllEntity[i].TotalValue = AllEntity[i].debtor.TotalValue + AllEntity[i].creditor.TotalValue
+    return AllEntity
+
+
+def CalculateContractInterest():
+    for i in range(0, len(AllContractInterests)):
+        AllContractInterests[i].TotalValue = AllContractInterests[i].interest * AllContractInterests[i].TotalValue
+    return AllContractInterests
+
+def CreateNewEntity(ID, NumberOfEntitys): # creats deters and creditors aswell
+    NewEntity = [Entity(0, Debtor(0, ID+1), Creditor(0, ID+i), ID+i) for i in range(0, NumberOfEntitys)]
+
+    AllCreditors.extend([entity.creditor for entity in NewEntity])
+    AllDebtors.extend([entity.debtor for entity in NewEntity])
+
+    return NewEntity
+
+def CreateNewContractInterest():
+    pass
+
+def CreateNewContractAssets():
+    pass
+
+cycles = 10000
 x = 0
-cycles = 1000
 
 tic = time.perf_counter()
 
-while x <= cycles:
-    print()
+print('\nCreate New Entity')
+New = CreateNewEntity(x, 10)
+for i in range(0, len(New)): print(New[i])
 
-    InterestCalculation()
-    print()
-    print()
-    ContractInterestsyncer(0) # Item ID: 0 = ContractInterest ID
-    print()
-    TotalMoney()
-    print()
-    EntitySumer()
-    print()
-    #printContractInterests()
-    #print()
+while x < cycles:
+
+    print(f'\n[{x:0.0f}] Calculate Contract Interest')
+    for i in range(0, len(CalculateContractInterest())): print(f'[{x:0.0f}] ', CalculateContractInterest()[i])
+    print(f'\n[{x:0.0f}] Calculate Total Component Value')
+    for i in range(0, len(CalculateComponentValue())):
+        for b in range(0, len(CalculateComponentValue())): print(f'[{x:0.0f}] ', CalculateComponentValue()[i][b])
+    print(f'\n[{x:0.0f}] Calculate Total Entity Value')
+    for i in range(0, len(CalculateEntityValue())): print(f'[{x:0.0f}] ', CalculateEntityValue()[i])
 
     x += 1
 
 toc = time.perf_counter()
 
-print()
-print(f"Simulated the economy in {toc - tic:0.4f} seconds for " + str(cycles) + ' cycles')
+print(f"\nSimulated the economy in {toc - tic:0.4f} seconds for " + str(cycles) + ' cycles')
