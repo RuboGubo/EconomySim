@@ -38,6 +38,13 @@ class Creditor:
     TotalValue: float
     ID: str
 
+@dataclass
+class ContractAssets:
+    TotalValue: float
+    debtor: str
+    Creditor: str
+    interest: float
+
 
 # add assets
 
@@ -100,23 +107,27 @@ def CreateNewEntity(DebtorID, CreditorID, EntityID, NumberOfEntitys): # creats d
 def CreateNewContractInterest():
     pass
 
-cycles = 1
+def CreateNewContractAssets():
+    pass
+
+cycles = 500
 x = 0
 
 tic = time.perf_counter()
 
 print('\nCreate New Entity')
-New = CreateNewEntity(x, x, x, 0)
+New = CreateNewEntity(x, x, x, 10)
 for i in range(0, len(New)): print(New[i])
 
 while x < cycles:
 
-    print('\nCalculate Contract Interest')
-    for i in range(0, len(CalculateContractInterest())): print(CalculateContractInterest()[i])
-    print('\nCalculate Total Component Value')
-    for i in range(0, len(CalculateComponentValue())): print(CalculateComponentValue()[i])
-    print('\nCalculate Total Entity Value')
-    for i in range(0, len(CalculateEntityValue())): print(CalculateEntityValue()[i])
+    print(f'\n[{x:0.0f}] Calculate Contract Interest')
+    for i in range(0, len(CalculateContractInterest())): print(f'[{x:0.0f}] ', CalculateContractInterest()[i])
+    print(f'\n[{x:0.0f}] Calculate Total Component Value')
+    for i in range(0, len(CalculateComponentValue())):
+        for b in range(0, len(CalculateComponentValue())): print(f'[{x:0.0f}] ', CalculateComponentValue()[i][b])
+    print(f'\n[{x:0.0f}] Calculate Total Entity Value')
+    for i in range(0, len(CalculateEntityValue())): print(f'[{x:0.0f}] ', CalculateEntityValue()[i])
 
     x += 1
 
