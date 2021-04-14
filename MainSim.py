@@ -83,6 +83,7 @@ def CreateNewEntity(ID, NumberOfEntitys): # creats deters and creditors aswell
 
     AllCreditors.extend([entity.creditor for entity in NewEntity])
     AllDebtors.extend([entity.debtor for entity in NewEntity])
+    AllEntity.extend(NewEntity)
 
     return NewEntity
 
@@ -92,7 +93,7 @@ def CreateNewContractInterest():
 def CreateNewContractAssets():
     pass
 
-cycles = 10000
+cycles = 1000
 x = 0
 
 tic = time.perf_counter()
