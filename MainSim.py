@@ -41,15 +41,6 @@ class Item:
     itemID: str
     itemValue: int
 
-#debtor1 = Debtor(0, 'debtor1')
-#Creditor1 = Creditor(0, 'Creditor1')
-#bob = Entity(debtor1.totalValue + Creditor1.totalValue , debtor1, Creditor1, 'bob')
-
-#debtor2 = Debtor(0, 'debtor2')
-#Creditor2 = Creditor(0, 'Creditor2')
-#sharon = Entity(debtor2.totalValue + Creditor2.totalValue, debtor2, Creditor2, 'sharon')
-
-
 BankAlphaContractInterest1 = ContractInterest(1, 0, 1, 1.05)
 
 AllEntity = []
