@@ -95,13 +95,13 @@ def CreateNewContractInterest():
 def CreateNewContractAssets():
     pass
 
-cycles = 100000
+cycles = 1000
 x = 0
 
 tic = time.perf_counter()
 
 logging.debug('Create New Entity')
-New = CreateNewEntity(x, 10)
+New = CreateNewEntity(x, 0)
 for i in range(0, len(New)): logging.debug(New[i])
 
 while x < cycles:
