@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 import time
-from typing import List
+import logging
+
+logging.basicConfig(level = logging.DEBUG, filename = "test.log")
 
 @dataclass
 class Entity:
@@ -93,27 +95,29 @@ def CreateNewContractInterest():
 def CreateNewContractAssets():
     pass
 
-cycles = 1000
+cycles = 100000
 x = 0
 
 tic = time.perf_counter()
 
-print('\nCreate New Entity')
+logging.debug('Create New Entity')
 New = CreateNewEntity(x, 10)
-for i in range(0, len(New)): print(New[i])
+for i in range(0, len(New)): logging.debug(New[i])
 
 while x < cycles:
 
-    print(f'\n[{x:0.0f}] Calculate Contract Interest')
-    for i in range(0, len(CalculateContractInterest())): print(f'[{x:0.0f}] ', CalculateContractInterest()[i])
-    print(f'\n[{x:0.0f}] Calculate Total Component Value')
+    logging.debug(f'[{x:0.0f}] Calculate Contract Interest')
+    for i in range(0, len(CalculateContractInterest())): logging.debug(f'[{x:0.0f}] ' + str(CalculateContractInterest()[i]))
+
+    logging.debug(f'[{x:0.0f}] Calculate Total Component Value')
     for i in range(0, len(CalculateComponentValue())):
-        for b in range(0, len(CalculateComponentValue())): print(f'[{x:0.0f}] ', CalculateComponentValue()[i][b])
-    print(f'\n[{x:0.0f}] Calculate Total Entity Value')
-    for i in range(0, len(CalculateEntityValue())): print(f'[{x:0.0f}] ', CalculateEntityValue()[i])
+        for b in range(0, len(CalculateComponentValue())): logging.debug(f'[{x:0.0f}] ' + str(CalculateComponentValue()[i][b]))
+
+    logging.debug(f'[{x:0.0f}] Calculate Total Entity Value')
+    for i in range(0, len(CalculateEntityValue())): logging.debug(f'[{x:0.0f}] ' + str(CalculateEntityValue()[i]))
 
     x += 1
 
 toc = time.perf_counter()
 
-print(f"\nSimulated the economy in {toc - tic:0.4f} seconds for " + str(cycles) + ' cycles')
+logging.debug(f"Simulated the economy in {toc - tic:0.4f} seconds for " + str(cycles) + ' cycles')
