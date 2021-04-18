@@ -29,8 +29,9 @@ class ContractInterest:
     debtor: str
     creditor: str
     interest: float
+    ID: int
 
-@dataclass
+@dataclass # woooooooooorrrrrrrrrkkkkkkkkkkkkkkk oooooooooooooooonnnnnnnnnnnnnnn tttttttthhhhhhhhhhiiiiiiiiiiisssssssss
 class ContractAssets:
     totalValue: float
     debtor: str
@@ -38,15 +39,15 @@ class ContractAssets:
     itemQuantity: int
 
 class Item:
-    itemID: str
-    itemValue: int
+    itemID: float
+    itemValue: float
 
-BankAlphaContractInterest1 = ContractInterest(1, 0, 1, 1.05)
+#BankAlphaContractInterest1 = ContractInterest(1, 0, 1, 1.05, -1)
 
 AllEntity = []
 AllDebtors = []
 AllCreditors = []
-AllContractInterests = [BankAlphaContractInterest1]
+AllContractInterests = []
 
 def CalculateComponentValue(): # might need improving
     for i in range(0, len(AllContractInterests)): # find ContractInterests with debitors
@@ -55,7 +56,7 @@ def CalculateComponentValue(): # might need improving
                 AllDebtors[d].totalValue += AllContractInterests[i].totalValue
 
     for i in range(0, len(AllContractInterests)): # find ContractInterests with debitors
-        for d in range(0, len(AllDebtors)):
+        for d in range(0, len(AllCreditors)):
             if AllContractInterests[i].creditor == AllCreditors[d].ID:
                 AllCreditors[d].totalValue -= AllContractInterests[i].totalValue
     
@@ -83,11 +84,19 @@ def CreateNewEntity(ID, NumberOfEntitys): # creats deters and creditors aswell
 
     return NewEntity
 
-def CreateNewContractInterest():
-    pass
+def CreateNewContractInterest(debtor, creditor, interest, ID):
+    NewContract = [ContractInterest(1, debtor, creditor, interest, ID)]
+    AllContractInterests.extend(NewContract)
+    return NewContract
 
 def CreateNewContractAssets():
     pass
+
+def ClearAllTotalValue():
+    for i in range(0, len(AllCreditors)):
+        AllCreditors[i].totalValue = 0
+    for i in range(0, len(AllDebtors)):
+        AllDebtors[i].totalValue = 0
 
 cycles = 1
 x = 0
@@ -96,26 +105,39 @@ tic = time.perf_counter()
 
 logging.debug('Create New Entity')
 New = CreateNewEntity(x, 2)
+
 for i in range(0, len(New)): logging.debug(New[i])
+
+logging.debug('Create New Contract')
+New = CreateNewContractInterest(0, 1, 1.58, 0)
+
+logging.debug(New)
+
+
 
 while x < cycles:
 
 
-
     # do once all actions are compleated
 
+    logging.debug(f'[{x:0.0f}] Clear Entity Total Value')
+    ClearAllTotalValue()
+
     logging.debug(f'[{x:0.0f}] Calculate Contract Interest')
-    for i in range(0, len(CalculateContractInterest())): logging.debug(f'[{x:0.0f}] ' + str(CalculateContractInterest()[i]))
-
-    logging.debug(f'[{x:0.0f}] Calculate Total Component Value')
-    for i in range(0, len(CalculateComponentValue())):
-        for b in range(0, len(CalculateComponentValue())): logging.debug(f'[{x:0.0f}] ' + str(CalculateComponentValue()[i][b]))
-
-    logging.debug(f'[{x:0.0f}] Calculate Total Entity Value')
-    for i in range(0, len(CalculateEntityValue())): logging.debug(f'[{x:0.0f}] ' + str(CalculateEntityValue()[i]))
+    CCI = CalculateContractInterest()
+    for i in range(0, len(CCI)): logging.debug(f'[{x:0.0f}] ' + str(CCI[i]))
 
     # update item value
     # calculate asset contract value and add to debitor
+
+    logging.debug(f'[{x:0.0f}] Calculate Total Component Value')
+    CCV = CalculateComponentValue()
+    for i in range(0, len(CCV)):
+        for b in range(0, len(CCV)): logging.debug(f'[{x:0.0f}] ' + str(CCV[i][b]))
+
+    logging.debug(f'[{x:0.0f}] Calculate Total Entity Value')
+    CEV = CalculateEntityValue()
+    for i in range(0, len(CEV)): logging.debug(f'[{x:0.0f}] ' + str(CEV[i]))
 
     x += 1
 
