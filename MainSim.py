@@ -32,11 +32,12 @@ class ContractInterest:
     ID: int
 
 @dataclass # woooooooooorrrrrrrrrkkkkkkkkkkkkkkk oooooooooooooooonnnnnnnnnnnnnnn tttttttthhhhhhhhhhiiiiiiiiiiisssssssss
-class ContractAssets:
+class ContractAsset:
     totalValue: float
     debtor: str
     itemID: float
     itemQuantity: int
+    ID: int
 
 class Item:
     itemID: float
@@ -84,13 +85,15 @@ def CreateNewEntity(ID, NumberOfEntitys): # creats deters and creditors aswell
 
     return NewEntity
 
-def CreateNewContractInterest(debtor, creditor, interest, ID):
+def CreateNewContractInterest(totalValue, debtor, creditor, interest, ID): # nnnnnnnnnneeeeeeeeddddddddddddd wwwwwwwwwwwoooooooooooooorrrrrrrrrrrrkkkkkkkkk
     NewContract = [ContractInterest(1, debtor, creditor, interest, ID)]
     AllContractInterests.extend(NewContract)
     return NewContract
 
-def CreateNewContractAssets():
-    pass
+def CreateNewContractAsset(debtor, itemID, itemQuantity, ID):
+    NewContract = [ContractAsset(debtor, itemID, itemQuantity, ID)]
+    AllContractInterests.extend(NewContract)
+    return NewContract
 
 def ClearAllTotalValue():
     for i in range(0, len(AllCreditors)):
@@ -109,7 +112,7 @@ New = CreateNewEntity(x, 2)
 for i in range(0, len(New)): logging.debug(New[i])
 
 logging.debug('Create New Contract')
-New = CreateNewContractInterest(0, 1, 1.58, 0)
+New = CreateNewContractInterest(1, 0, 1, 1.58, 0)
 
 logging.debug(New)
 
@@ -120,7 +123,7 @@ while x < cycles:
 
     # do once all actions are compleated
 
-    logging.debug(f'[{x:0.0f}] Clear Entity Total Value')
+    logging.debug(f'[{x:0.0f}] Clear Creditor, Debitor and Entity Total Value')
     ClearAllTotalValue()
 
     logging.debug(f'[{x:0.0f}] Calculate Contract Interest')
