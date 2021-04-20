@@ -2,7 +2,7 @@ from dataclasses import dataclass
 import time
 import logging
 
-open("test.log", 'w').close()
+open("test.log", 'w').close() # wipes log so that it is easy to read
 
 logging.basicConfig(level = logging.DEBUG, filename = "test.log")
 
@@ -63,20 +63,17 @@ def CalculateComponentValue(): # might need improving
     
     return AllDebtors, AllCreditors
 
-
-
 def CalculateEntityValue():
     for i in range(0, len(AllEntity)):
         AllEntity[i].totalValue = AllEntity[i].debtor.totalValue + AllEntity[i].creditor.totalValue
     return AllEntity
-
 
 def CalculateContractInterest():
     for i in range(0, len(AllContractInterests)):
         AllContractInterests[i].totalValue = AllContractInterests[i].interest * AllContractInterests[i].totalValue
     return AllContractInterests
 
-def CreateNewEntity(ID, NumberOfEntitys): # creats deters and creditors aswell
+def CreateNewEntity(ID, NumberOfEntitys): # creats deters and creditors aswell as Entities
     NewEntity = [Entity(0, Debtor(0, ID+i), Creditor(0, ID+i), ID+i) for i in range(0, NumberOfEntitys)]
 
     AllCreditors.extend([entity.creditor for entity in NewEntity])
@@ -95,7 +92,7 @@ def CreateNewContractAsset(debtor, itemID, itemQuantity, ID):
     AllContractInterests.extend(NewContract)
     return NewContract
 
-def ClearAllTotalValue():
+def ClearAllTotalValue(): # clears the value of the creditor and debitor which then affects the totalValue calculation for Entities
     for i in range(0, len(AllCreditors)):
         AllCreditors[i].totalValue = 0
     for i in range(0, len(AllDebtors)):
