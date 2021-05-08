@@ -1,1 +1,1 @@
-# the AI entityes that will play the sim
+# the AI entitys that will play the sim
