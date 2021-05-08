@@ -39,6 +39,7 @@ class ContractAsset:
     itemQuantity: int
     ID: int
 
+@dataclass
 class Item:
     itemID: float
     itemValue: float
@@ -49,6 +50,8 @@ AllEntity = []
 AllDebtors = []
 AllCreditors = []
 AllContractInterests = []
+AllContractAssets = []
+AllItems = []
 
 def CalculateComponentValue(): # might need improving
     for i in range(0, len(AllContractInterests)): # find ContractInterests with debitors
@@ -56,10 +59,15 @@ def CalculateComponentValue(): # might need improving
             if AllContractInterests[i].debtor == AllDebtors[d].ID:
                 AllDebtors[d].totalValue += AllContractInterests[i].totalValue
 
-    for i in range(0, len(AllContractInterests)): # find ContractInterests with debitors
+    for i in range(0, len(AllContractInterests)): # find ContractInterests with creditors
         for d in range(0, len(AllCreditors)):
             if AllContractInterests[i].creditor == AllCreditors[d].ID:
                 AllCreditors[d].totalValue -= AllContractInterests[i].totalValue
+
+    for i in range(0, len(AllContractAssets)): # find ContractAssets with debitors
+        for d in range(0, len(AllDebtors)):
+            if AllContractAssets[i].debtor == AllDebtors[d].ID:
+                AllDebtors[d].totalValue += AllContractAssets[i].totalValue
     
     return AllDebtors, AllCreditors
 
@@ -73,6 +81,11 @@ def CalculateContractInterest():
         AllContractInterests[i].totalValue = AllContractInterests[i].interest * AllContractInterests[i].totalValue
     return AllContractInterests
 
+def CalculateContractAsset():
+    for i in range(0, len(AllContractAssets)):
+        AllContractAssets[i].totalValue = AllContractAssets[i].itemQuantity * AllContractAssets[i].itemID.itemValue
+    return AllContractAssets
+
 def CreateNewEntity(ID, NumberOfEntitys): # creats deters and creditors aswell as Entities
     NewEntity = [Entity(0, Debtor(0, ID+i), Creditor(0, ID+i), ID+i) for i in range(0, NumberOfEntitys)]
 
@@ -83,13 +96,24 @@ def CreateNewEntity(ID, NumberOfEntitys): # creats deters and creditors aswell a
     return NewEntity
 
 def CreateNewContractInterest(totalValue, debtor, creditor, interest, ID): # nnnnnnnnnneeeeeeeeddddddddddddd wwwwwwwwwwwoooooooooooooorrrrrrrrrrrrkkkkkkkkk
-    NewContract = [ContractInterest(1, debtor, creditor, interest, ID)]
+    NewContract = [ContractInterest(totalValue, debtor, creditor, interest, ID)]
     AllContractInterests.extend(NewContract)
     return NewContract
 
-def CreateNewContractAsset(debtor, itemID, itemQuantity, ID):
-    NewContract = [ContractAsset(debtor, itemID, itemQuantity, ID)]
-    AllContractInterests.extend(NewContract)
+def CreateNewItem(ID, NumberOfEntitys, Value):
+    NewItem = [Item(ID+i, Value) for i in range(0, NumberOfEntitys)]
+    AllItems.extend(NewItem)
+    return NewItem
+
+def CreateNewContractAsset(debtor, itemID, itemQuantity, ID): # VERY SLOW, FIX
+    for e in range(0, len(AllItems)):
+        AI = AllItems[e]
+    
+        if AI.itemID == itemID:
+            break
+
+    NewContract = [ContractAsset(0, debtor, AI, itemQuantity, ID)]
+    AllContractAssets.extend(NewContract)
     return NewContract
 
 def ClearAllTotalValue(): # clears the value of the creditor and debitor which then affects the totalValue calculation for Entities
@@ -108,14 +132,29 @@ New = CreateNewEntity(x, 2)
 
 for i in range(0, len(New)): logging.debug(New[i])
 
-logging.debug('Create New Contract')
+
+logging.debug('Create New Item')
+NewItem = CreateNewItem(x, 2, 1)
+
+for i in range(0, len(NewItem)): logging.debug(NewItem[i])
+
+
+logging.debug('Create New Interest Contract')
 New = CreateNewContractInterest(1, 0, 1, 1.58, 0)
 
 logging.debug(New)
 
 
+logging.debug('Create New Asset Contract')
+NewAssetContract = CreateNewContractAsset(1, 1, 50, x+1)
+
+logging.debug(NewAssetContract)
+
 
 while x < cycles:
+
+    # AllContractAssets[0].itemQuantity =+ AllContractAssets[0].itemQuantity+1
+    # use above code to increment a contract asset by one, this will need to be a proper function in the future
 
 
     # do once all actions are compleated
@@ -126,6 +165,10 @@ while x < cycles:
     logging.debug(f'[{x:0.0f}] Calculate Contract Interest')
     CCI = CalculateContractInterest()
     for i in range(0, len(CCI)): logging.debug(f'[{x:0.0f}] ' + str(CCI[i]))
+
+    logging.debug(f'[{x:0.0f}] Calculate Total Asset Value')
+    CCA = CalculateContractAsset()
+    for i in range(0, len(CCA)): logging.debug(f'[{x:0.0f}] ' + str(CCA[i]))
 
     # update item value
     # calculate asset contract value and add to debitor
