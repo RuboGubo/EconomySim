@@ -1,7 +1,7 @@
 import time
 
 # Creditors = [[bank name, total money, [[ContractInterest ID, ContractInterest owner ID, interest, total money in ContractInterest (true)]]]]
-Creditors = [['Bank Alpha', 0, [['Bank Alpha ContractInterest 1', 'debtor 1', 1.05, 5], 
+Creditors = [['Bank Alpha', 0, [['Bank Alpha ContractInterest 1', 'debtor 1', 1.05, 5],
                             ['Bank Alpha ContractInterest 2', 'debtor 2', 1.03, 20]]]]
 
 # Debtors = [[name, total money, [[ContractInterest ID, ContractInterest owner ID, interest, total money in ContractInterest (aware)]]]]
