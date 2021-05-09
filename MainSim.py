@@ -127,14 +127,15 @@ x = 0
 
 tic = time.perf_counter()
 
+# all tasks that are not within the loop will be actions that the user or AI can interact with
 logging.debug('Create New Entity')
-New = CreateNewEntity(x, 2)
+New = CreateNewEntity(x, 2) # remove abilaty for it to create multipal Entitys at a time + add the abilaty to use a already existing debitor/creditor
 
 for i in range(0, len(New)): logging.debug(New[i])
 
 
 logging.debug('Create New Item')
-NewItem = CreateNewItem(x, 2, 1)
+NewItem = CreateNewItem(x, 2, 1) # remove abilaty for it to create multipal Items at a time
 
 for i in range(0, len(NewItem)): logging.debug(NewItem[i])
 
