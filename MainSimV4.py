@@ -76,17 +76,21 @@ class indexing:
             if ContractAssetitem in Entity.AssetContracts:
                 return True
             else:
-                try:
-                    Entity.AssetContracts[ContractAssetitem]
-                    return True
-                except:
-                    print('Contract does not exist')
-                    return False
+                return False
+        else:
+            try:
+                Entity.AssetContracts[ContractAssetitem]
+                return True
+            except:
+                print('Contract does not exist')
+                return False
     
-    def transferAssetContract(self, Entity1: object, Entity2: object, AssetContractID: str):
-        if self.validateAssetContract(AssetContractID, Entity1):
-        
-            AssetContact = Entity1.AssetContracts[AssetContractID]
+class exchange():
+    def transferAssetContract(self, FromEntity: object, ToEntity: object, AssetContractID: str):
+        AssetContact = Indexer.convertContractAssetIDToObject(AssetContractID, FromEntity)
+        FromEntity.AssetContracts.pop(AssetContact.ID)
+        ToEntity.AssetContracts[AssetContact.ID] = AssetContact
+        return True
         
  
 
@@ -105,6 +109,7 @@ class Entity:
         self.AssetContracts[ContractID] = NewAssetContract
         return NewAssetContract
     
+Exchange = exchange()
 Indexer = indexing()
 Indexer.createNewPropertie('hard', 1)
 Indexer.createNewPropertie('wood', 2)
@@ -116,3 +121,6 @@ print(Shelly.AssetContracts['Sticks Reserve'].getValueOfContract())
 
 Sharron = Entity(1, 'Sharron')
 
+Exchange.transferAssetContract(Shelly, Sharron, 'Sticks Reserve')
+
+print(Sharron.AssetContracts['Sticks Reserve'].getValueOfContract())
