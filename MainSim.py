@@ -1,7 +1,5 @@
-from typing import Text
-from Manufacture import Recipy1
-from dataclasses import dataclass
 import time
+from dataclasses import dataclass
 import logging
 
 open("test.log", 'w').close() # wipes log so that it is easy to read
@@ -63,7 +61,7 @@ AllItems = []
 AllItemProperties = []
 
 
-def CalculateComponentValue(): # might need improving
+def CalculateComponentValue(): # might need improving, make
     for i in range(0, len(AllContractInterests)): # find ContractInterests with debitors
         for d in range(0, len(AllDebtors)):
             if AllContractInterests[i].debtor == AllDebtors[d].ID:
@@ -103,7 +101,6 @@ def CalculateItemValue():
     return AllItems
 
 
-
 def CreateNewEntity(ID): # creats deters and creditors aswell as Entities
     NewEntity = [Entity(0, Debtor(0, ID), Creditor(0, ID), ID)]
 
@@ -113,7 +110,7 @@ def CreateNewEntity(ID): # creats deters and creditors aswell as Entities
 
     return NewEntity
 
-def CreateNewContractInterest(totalValue, debtor, creditor, interest, ID): # nnnnnnnnnneeeeeeeeddddddddddddd wwwwwwwwwwwoooooooooooooorrrrrrrrrrrrkkkkkkkkk
+def CreateNewContractInterest(totalValue, debtor, creditor, interest, ID):
     NewContract = [ContractInterest(totalValue, debtor, creditor, interest, ID)]
     AllContractInterests.extend(NewContract)
     return NewContract
@@ -128,18 +125,31 @@ def CreateNewPropertie(value, ID):
     AllItemProperties.extend(NewPropertie)
     return NewPropertie
 
-def CreateNewContractAsset(debtor, itemID, itemQuantity, ID): # VERY SLOW, FIX
-    for e in range(0, len(AllItems)):
-        AI = AllItems[e]
-    
-        if AI.itemID == itemID:
-            break
+def CreateNewContractAsset(debtor, itemID, itemQuantity, ID, **kwargs): # VERY SLOW, FIX
+    itemProperties = kwargs.get('iP', None)
 
-    NewContract = [ContractAsset(0, debtor, AI, itemQuantity, ID)]
+    found = False
+
+    for e in range(0, len(AllItems)):
+        CI = AllItems[e]
+    
+        if CI.itemID != itemID:
+            break
+        else:
+            NewContract = [ContractAsset(0, debtor, CI, itemQuantity, ID)]
+            found = True
+    
+    if found != True:
+        if itemProperties != None:
+            NewContract = [ContractAsset(0, debtor, CreateNewItem(itemID, itemProperties)[0], itemQuantity, ID)]
+        else:
+            raise Exception('The item you have called does not exist, and you have not added properties to create one, please add them so that this may be done')
+
     AllContractAssets.extend(NewContract)
     return NewContract
 
-def ClearAllTotalValue(): # clears the value of the creditor and debitor which then affects the totalValue calculation for Entities
+def ClearAllTotalValue():
+    # clears the value of the creditor and debitor which then affects the totalValue calculation for Entities
     for i in range(0, len(AllCreditors)):
         AllCreditors[i].totalValue = 0
     for i in range(0, len(AllDebtors)):
@@ -147,7 +157,7 @@ def ClearAllTotalValue(): # clears the value of the creditor and debitor which t
     for i in range(0, len(AllItems)):
         AllItems[i].itemValue = 0
 
-cycles = 1
+cycles = 10
 x = 0
 
 tic = time.perf_counter()
@@ -159,11 +169,11 @@ logging.debug(CreateNewEntity(x))
 logging.debug(CreateNewEntity(x+1))
 
 logging.debug('Create New Item Properties')
-logging.debug(CreateNewPropertie(10, 'A'))
-logging.debug(CreateNewPropertie(-15, 'B'))
+logging.debug(CreateNewPropertie(-10, 'A'))
+logging.debug(CreateNewPropertie(15, 'B'))
 
 logging.debug('Create New Item')
-logging.debug(CreateNewItem(x, [AllItemProperties[0], AllItemProperties[1]]))
+logging.debug(CreateNewItem(x+1, [AllItemProperties[0], AllItemProperties[1]]))
 
 logging.debug('Create New Interest Contract')
 logging.debug(CreateNewContractInterest(1, 0, 1, 1.58, 0))
@@ -188,14 +198,14 @@ while x < cycles:
     CCI = CalculateContractInterest()
     for i in range(0, len(CCI)): logging.debug(f'[{x:0.0f}] ' + str(CCI[i]))
 
+    logging.debug(f'[{x:0.0f}] Calculate Total Item Value')
+    CIV = CalculateItemValue()
+    for i in range(0, len(CIV)): logging.debug(f'[{x:0.0f}] ' + str(CIV[i]))
+    
+    # calculate asset contract value and add to debitor
     logging.debug(f'[{x:0.0f}] Calculate Total Asset Value')
     CCA = CalculateContractAsset()
     for i in range(0, len(CCA)): logging.debug(f'[{x:0.0f}] ' + str(CCA[i]))
-
-    logging.debug(f'[{x:0.0f}] Calculate Total Item Value')
-    CIV = CalculateItemValue()
-    for i in range(0, len(CCA)): logging.debug(f'[{x:0.0f}] ' + str(CIV[i]))
-    # calculate asset contract value and add to debitor
 
     logging.debug(f'[{x:0.0f}] Calculate Total Component Value')
     CCV = CalculateComponentValue()
