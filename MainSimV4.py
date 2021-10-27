@@ -1,3 +1,4 @@
+from types import prepare_class
 from UsedDataClasses import ContractAsset, Item, Properities
 import dataclasses
 
@@ -45,6 +46,15 @@ class indexing:
                 return AssetContractID
             else:
                 return Entity.AssetContracts[AssetContractID]
+            
+    def updatePropertiesValue(self): 
+        for propertieID in self.Properties:
+            self.Properties[propertieID].PropertyValue += 0 # replace with new system in future
+        return True
+    
+    def updateItemsValue(self):
+        for ItemID in self.Items:
+            self.Items[ItemID] # Does not even have own value yet, will leave in though for the future
                 
     
 class exchange():
@@ -117,7 +127,7 @@ Indexer.createNewPropertie('wood', 2)
 Indexer.createNewItem('Stick', ['hard', 'wood'])
 
 Shelly = Entity(0, 'Shelly')
-Shelly.createAssetContract('Sticks Reserve', 'Stick', 5) # Suports both the actual dataclass and id
+Shelly.createAssetContract('Sticks Reserve', 'Stick', 5)
 print(Shelly.AssetContracts['Sticks Reserve'].getValueOfContract())
 
 Sharron = Entity(1, 'Sharron')
@@ -125,3 +135,12 @@ Sharron = Entity(1, 'Sharron')
 Exchange.transferAssetContract(Shelly, Sharron, 'Sticks Reserve')
 
 print(Sharron.AssetContracts['Sticks Reserve'].getValueOfContract())
+
+GameLoops = 100
+for i in range(GameLoops):
+    Indexer.updatePropertiesValue()
+    Indexer.updateItemsValue()
+    
+    Sharron.AssetContracts['Sticks Reserve'].itemQuantity += 1
+        
+    print(Sharron.AssetContracts['Sticks Reserve'].getValueOfContract())

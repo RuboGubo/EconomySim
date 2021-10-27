@@ -17,7 +17,7 @@ class Item:
 
 @dataclass
 class Properities:
-    PropertyValue: float
+    PropertyValue: int
     ID: str
     
 class ContractAsset:
