@@ -24,7 +24,7 @@ class indexing:
     def convertPropertieIDsToDataClasses(self, PropertiesIDs):
         ItemProperties = {}
         for propertieID in PropertiesIDs:
-            if self.validatePropertiesExist(propertieID):
+            if Validator.validatePropertiesExist(propertieID):
                 if isinstance(propertieID, Properities):
                     ItemProperties[propertieID.ID] =  propertieID
                 else:
@@ -33,27 +33,35 @@ class indexing:
         return ItemProperties
         
     def convertItemIDToDataClass(self, ItemID):
-        if self.validateItemExist(ItemID) and isinstance(ItemID, str):
+        if Validator.validateItemExist(ItemID) and isinstance(ItemID, str):
             if isinstance(ItemID, Item):
                 return ItemID
             else:
                 return self.Items[ItemID]
     
     def convertContractAssetIDToObject(self, AssetContractID, Entity):
-        if self.validateAssetContract(AssetContractID, Entity):
+        if Validator.validateAssetContract(AssetContractID, Entity):
             if isinstance(AssetContractID, ContractAsset):
                 return AssetContractID
             else:
                 return Entity.AssetContracts[AssetContractID]
                 
     
+class exchange():
+    def transferAssetContract(self, FromEntity: object, ToEntity: object, AssetContractID: str):
+        AssetContact = Indexer.convertContractAssetIDToObject(AssetContractID, FromEntity)
+        FromEntity.AssetContracts.pop(AssetContact.ID)
+        ToEntity.AssetContracts[AssetContact.ID] = AssetContact
+        return True
+        
+class validator():
     def validateItemExist(self, ItemID):
         if dataclasses.is_dataclass(ItemID):
-            if ItemID in self.Items:
+            if ItemID in Indexer.Items:
                 return True
         else:
             try:
-                self.Items[ItemID]
+                Indexer.Items[ItemID]
                 return True
             except:
                 print('Item does not exist')
@@ -61,11 +69,11 @@ class indexing:
     
     def validatePropertiesExist(self, PropertieID):
         if dataclasses.is_dataclass(PropertieID):
-            if PropertieID in self.Properties:
+            if PropertieID in Indexer.Properties:
                 return True
         else:
             try:
-                self.Properties[PropertieID]
+                Indexer.Properties[PropertieID]
                 return True
             except:
                 print('Item does not exist')
@@ -84,15 +92,6 @@ class indexing:
             except:
                 print('Contract does not exist')
                 return False
-    
-class exchange():
-    def transferAssetContract(self, FromEntity: object, ToEntity: object, AssetContractID: str):
-        AssetContact = Indexer.convertContractAssetIDToObject(AssetContractID, FromEntity)
-        FromEntity.AssetContracts.pop(AssetContact.ID)
-        ToEntity.AssetContracts[AssetContact.ID] = AssetContact
-        return True
-        
- 
 
 class Entity:
     def __init__(self, ID: int, Name: str) -> None:
@@ -109,7 +108,9 @@ class Entity:
         self.AssetContracts[ContractID] = NewAssetContract
         return NewAssetContract
     
+Validator = validator()
 Exchange = exchange()
+
 Indexer = indexing()
 Indexer.createNewPropertie('hard', 1)
 Indexer.createNewPropertie('wood', 2)
