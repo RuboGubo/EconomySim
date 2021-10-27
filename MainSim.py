@@ -61,42 +61,42 @@ AllItems = []
 AllItemProperties = []
 
 
-def CalculateComponentValue(): # might need improving, make
-    for i in range(0, len(AllContractInterests)): # find ContractInterests with debitors
-        for d in range(0, len(AllDebtors)):
+def CalculateComponentValue(): # might need improving
+    for i in range(len(AllContractInterests)): # find ContractInterests with debitors
+        for d in range(len(AllDebtors)):
             if AllContractInterests[i].debtor == AllDebtors[d].ID:
                 AllDebtors[d].totalValue += AllContractInterests[i].totalValue
 
-    for i in range(0, len(AllContractInterests)): # find ContractInterests with creditors
-        for d in range(0, len(AllCreditors)):
+    for i in range(len(AllContractInterests)): # find ContractInterests with creditors
+        for d in range(len(AllCreditors)):
             if AllContractInterests[i].creditor == AllCreditors[d].ID:
                 AllCreditors[d].totalValue -= AllContractInterests[i].totalValue
 
-    for i in range(0, len(AllContractAssets)): # find ContractAssets with debitors
-        for d in range(0, len(AllDebtors)):
+    for i in range(len(AllContractAssets)): # find ContractAssets with debitors
+        for d in range(len(AllDebtors)):
             if AllContractAssets[i].debtor == AllDebtors[d].ID:
                 AllDebtors[d].totalValue += AllContractAssets[i].totalValue
-    
+
     return AllDebtors, AllCreditors
 
 def CalculateEntityValue():
-    for i in range(0, len(AllEntity)):
+    for i in range(len(AllEntity)):
         AllEntity[i].totalValue = AllEntity[i].debtor.totalValue + AllEntity[i].creditor.totalValue
     return AllEntity
 
 def CalculateContractInterest():
-    for i in range(0, len(AllContractInterests)):
+    for i in range(len(AllContractInterests)):
         AllContractInterests[i].totalValue = AllContractInterests[i].interest * AllContractInterests[i].totalValue
     return AllContractInterests
 
 def CalculateContractAsset():
-    for i in range(0, len(AllContractAssets)):
+    for i in range(len(AllContractAssets)):
         AllContractAssets[i].totalValue = AllContractAssets[i].itemQuantity * AllContractAssets[i].itemID.itemValue
     return AllContractAssets
 
 def CalculateItemValue():
-    for i in range(0, len(AllItems)):
-        for e in range(0, len(AllItems[i].properties)):
+    for i in range(len(AllItems)):
+        for e in range(len(AllItems[i].properties)):
             AllItems[i].itemValue += AllItems[i].properties[e].value
     return AllItems
 
@@ -125,15 +125,11 @@ def CreateNewPropertie(value, ID):
     AllItemProperties.extend(NewPropertie)
     return NewPropertie
 
-def CreateNewContractAsset(debtor, itemID, itemQuantity, ID, **kwargs): # VERY SLOW, FIX
-    itemProperties = kwargs.get('iP', None)
+def CreateNewContractAsset(debtor, itemID, itemQuantity, ID): # VERY SLOW, FIX
+    for e in range(len(AllItems)):
+        AI = AllItems[e]
 
-    found = False
-
-    for e in range(0, len(AllItems)):
-        CI = AllItems[e]
-    
-        if CI.itemID != itemID:
+        if AI.itemID == itemID:
             break
         else:
             NewContract = [ContractAsset(0, debtor, CI, itemQuantity, ID)]
@@ -148,13 +144,12 @@ def CreateNewContractAsset(debtor, itemID, itemQuantity, ID, **kwargs): # VERY S
     AllContractAssets.extend(NewContract)
     return NewContract
 
-def ClearAllTotalValue():
-    # clears the value of the creditor and debitor which then affects the totalValue calculation for Entities
-    for i in range(0, len(AllCreditors)):
+def ClearAllTotalValue(): # clears the value of the creditor and debitor which then affects the totalValue calculation for Entities
+    for i in range(len(AllCreditors)):
         AllCreditors[i].totalValue = 0
-    for i in range(0, len(AllDebtors)):
+    for i in range(len(AllDebtors)):
         AllDebtors[i].totalValue = 0
-    for i in range(0, len(AllItems)):
+    for i in range(len(AllItems)):
         AllItems[i].itemValue = 0
 
 cycles = 10
@@ -196,12 +191,15 @@ while x < cycles:
 
     logging.debug(f'[{x:0.0f}] Calculate Contract Interest')
     CCI = CalculateContractInterest()
-    for i in range(0, len(CCI)): logging.debug(f'[{x:0.0f}] ' + str(CCI[i]))
+    for i in range(len(CCI)): logging.debug(f'[{x:0.0f}] ' + str(CCI[i]))
+
+    logging.debug(f'[{x:0.0f}] Calculate Total Asset Value')
+    CCA = CalculateContractAsset()
+    for i in range(len(CCA)): logging.debug(f'[{x:0.0f}] ' + str(CCA[i]))
 
     logging.debug(f'[{x:0.0f}] Calculate Total Item Value')
     CIV = CalculateItemValue()
-    for i in range(0, len(CIV)): logging.debug(f'[{x:0.0f}] ' + str(CIV[i]))
-    
+    for i in range(len(CCA)): logging.debug(f'[{x:0.0f}] ' + str(CIV[i]))
     # calculate asset contract value and add to debitor
     logging.debug(f'[{x:0.0f}] Calculate Total Asset Value')
     CCA = CalculateContractAsset()
@@ -209,12 +207,12 @@ while x < cycles:
 
     logging.debug(f'[{x:0.0f}] Calculate Total Component Value')
     CCV = CalculateComponentValue()
-    for i in range(0, len(CCV)):
-        for b in range(0, len(CCV)): logging.debug(f'[{x:0.0f}] ' + str(CCV[i][b]))
+    for i in range(len(CCV)):
+        for b in range(len(CCV)): logging.debug(f'[{x:0.0f}] ' + str(CCV[i][b]))
 
     logging.debug(f'[{x:0.0f}] Calculate Total Entity Value')
     CEV = CalculateEntityValue()
-    for i in range(0, len(CEV)): logging.debug(f'[{x:0.0f}] ' + str(CEV[i]))
+    for i in range(len(CEV)): logging.debug(f'[{x:0.0f}] ' + str(CEV[i]))
 
     x += 1
 

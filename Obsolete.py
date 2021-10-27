@@ -13,110 +13,104 @@ Entity = [['bob', 0, 'debtor 1', 'Bank Alpha ContractInterest 1'],
           ['sharon', 0, 'debtor 2', 'a']]
 
 def printContractInterests():
-        for p in range(0, len(Debtors)): #cycle through Debtors
-            print(Debtors[p][0])
-            for cp in range(0, len(Debtors[p][2])): #cycle through ContractInterests debtor
-                print(Debtors[p][2][cp])
-            print()
-        
+        for p in range(len(Debtors)): #cycle through Debtors
+                print(Debtors[p][0])
+                for cp in range(len(Debtors[p][2])): #cycle through ContractInterests debtor
+                        print(Debtors[p][2][cp])
+                print()
+
         print()
-        
-        for b in range(0, len(Creditors)): # cycle through Creditors
-            print(Creditors[b][0])
-            for c in range(0, len(Creditors[b][2])): # cycle through ContractInterests
-                print(Creditors[b][2][c])
+
+        for b in range(len(Creditors)): # cycle through Creditors
+                print(Creditors[b][0])
+                for c in range(len(Creditors[b][2])): # cycle through ContractInterests
+                        print(Creditors[b][2][c])
 
 def ContractInterestsyncer(i):
-    print('ContractInterest Syncer:')
-    # i = item ID
-    for p in range(0, len(Debtors)): # cycle through Debtors
-        for cp in range(0, len(Debtors[p][2])): # cycle through ContractInterests debtor
-            print(Debtors[p][2][cp])
+        print('ContractInterest Syncer:')
+            # i = item ID
+        for p in range(len(Debtors)): # cycle through Debtors
+                for cp in range(len(Debtors[p][2])): # cycle through ContractInterests debtor
+                        print(Debtors[p][2][cp])
 
-            for b in range(0, len(Creditors)): # cycle through Creditors
-                for c in range(0, len(Creditors[b][2])): # cycle through ContractInterests
-                    print(Creditors[b][2][c])
+                        for b in range(len(Creditors)): # cycle through Creditors
+                                for c in range(len(Creditors[b][2])): # cycle through ContractInterests
+                                        print(Creditors[b][2][c])
 
-                    if Creditors[b][2][c][i] == Debtors[p][2][cp][i]:
-                        print()
-                        print('Match found: For Item code', i)
-                        print('Bank:   ', Creditors[b][2][c])
-                        print('debtor: ', Debtors[p][2][cp])
-                        print()
+                                        if Creditors[b][2][c][i] == Debtors[p][2][cp][i]:
+                                            print()
+                                            print('Match found: For Item code', i)
+                                            print('Bank:   ', Creditors[b][2][c])
+                                            print('debtor: ', Debtors[p][2][cp])
+                                            print()
 
-                        print('Synced:')
-                        for sy in range(2, len(Creditors[b][2][c])): #find all things to sync
+                                            print('Synced:')
+                                            for sy in range(2, len(Creditors[b][2][c])): #find all things to sync
 
-                            #banck gets to deside conditions so they are the validator
-                            Debtors[p][2][cp][sy] = Creditors[b][2][c][sy]
-                            print(Debtors[p][2][cp])
+                                                #banck gets to deside conditions so they are the validator
+                                                Debtors[p][2][cp][sy] = Creditors[b][2][c][sy]
+                                                print(Debtors[p][2][cp])
 
-                        print()
+                                            print()
 
 def TotalMoney():
-    print('Total Money:')
-    for p in range(0, len(Debtors)): # cycle through Debtors
-        Debtors[p][1] = 0
-        for cp in range(0, len(Debtors[p][2])): # cycle through ContractInterests debtor
-            Debtors[p][1] += Debtors[p][2][cp][3]
-            print(Debtors[p])
-    
-    for p in range(0, len(Creditors)): # cycle through Creditors
-        Creditors[p][1] = 0
-        for cp in range(0, len(Creditors[p][2])): # cycle through ContractInterests Creditors
-            Creditors[p][1] -= Creditors[p][2][cp][3]
-            print(Creditors[p])
+        print('Total Money:')
+        for p in range(len(Debtors)): # cycle through Debtors
+                Debtors[p][1] = 0
+                for cp in range(len(Debtors[p][2])): # cycle through ContractInterests debtor
+                        Debtors[p][1] += Debtors[p][2][cp][3]
+                        print(Debtors[p])
+
+        for p in range(len(Creditors)): # cycle through Creditors
+                Creditors[p][1] = 0
+                for cp in range(len(Creditors[p][2])): # cycle through ContractInterests Creditors
+                        Creditors[p][1] -= Creditors[p][2][cp][3]
+                        print(Creditors[p])
 
 def InterestCalculation():
-    print('Interest Calculation:')
-    for b in range(0, len(Creditors)): # cycle through Creditors
-            print(Creditors[b][0])
-            for c in range(0, len(Creditors[b][2])): # cycle through ContractInterests
+        print('Interest Calculation:')
+        for b in range(len(Creditors)): # cycle through Creditors
+                print(Creditors[b][0])
+                for c in range(len(Creditors[b][2])): # cycle through ContractInterests
 
-                Creditors[b][2][c][3] = Creditors[b][2][c][3]*Creditors[b][2][c][2]
+                        Creditors[b][2][c][3] = Creditors[b][2][c][3]*Creditors[b][2][c][2]
 
-                print(Creditors[b][2][c])
+                        print(Creditors[b][2][c])
         
 def EntitySumer():
-    print('Entity Sum:')
+        print('Entity Sum:')
 
-    for b in range(0, len(Entity)): # cycle through all Entitys
-        for i in range(0, len(Debtors)): # find Debtors
-            if Entity[b][2] == Debtors[i][0]:
-                print(b)
-                print(Entity[b][1], '           ', Debtors[i][1])
-                Entity[b][1] += Debtors[i][1]
+        for b in range(len(Entity)): # cycle through all Entitys
+                for i in range(len(Debtors)): # find Debtors
+                        if Entity[b][2] == Debtors[i][0]:
+                            print(b)
+                            print(Entity[b][1], '           ', Debtors[i][1])
+                            Entity[b][1] += Debtors[i][1]
 
-        for i in range(0, len(Creditors)): # find Debtors
-            if Entity[b][3] == Creditors[i][0]:
-                Entity[b][1] += Creditors[i][1]
+                for i in range(len(Creditors)): # find Debtors
+                        if Entity[b][3] == Creditors[i][0]:
+                            Entity[b][1] += Creditors[i][1]
 
 
-    #Entity[b][1] = Debtors
-    print(Entity[b])
+        #Entity[b][1] = Debtors
+        print(Entity[b])
 
-x = 0
 cycles = 1000
 
 tic = time.perf_counter()
 
-while x <= cycles:
-    print()
+for _ in range(cycles + 1):
+        print()
 
-    InterestCalculation()
-    print()
-    print()
-    ContractInterestsyncer(0) # Item ID: 0 = ContractInterest ID
-    print()
-    TotalMoney()
-    print()
-    EntitySumer()
-    print()
-    #printContractInterests()
-    #print()
-
-    x += 1
-
+        InterestCalculation()
+        print()
+        print()
+        ContractInterestsyncer(0) # Item ID: 0 = ContractInterest ID
+        print()
+        TotalMoney()
+        print()
+        EntitySumer()
+        print()
 toc = time.perf_counter()
 
 print()
